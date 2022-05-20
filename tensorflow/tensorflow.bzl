@@ -2899,7 +2899,7 @@ def pybind_extension(
     else:
         sname = name[p + 1:]
         prefix = name[:p + 1]
-    so_file = "%s%s.so" % (prefix, sname)
+    so_file = "%s%s.pypy39-pp73-x86_64-linux-gnu.so" % (prefix, sname)
     pyd_file = "%s%s.pyd" % (prefix, sname)
     exported_symbols = [
         "init%s" % sname,

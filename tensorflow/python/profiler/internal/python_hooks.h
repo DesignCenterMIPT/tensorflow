@@ -51,8 +51,7 @@ struct PythonTraceEntry {
       : start_time_ns(start),
         end_time_ns(end),
         co_filename(py_code_object->co_filename),
-        co_name(py_code_object->co_name),
-        co_firstlineno(py_code_object->co_firstlineno) {
+        co_name(py_code_object->co_name) {
     Py_XINCREF(co_filename);
     Py_XINCREF(co_name);
   }

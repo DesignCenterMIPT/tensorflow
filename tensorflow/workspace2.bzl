@@ -844,9 +844,9 @@ def _tf_repositories():
 
     tf_http_archive(
         name = "pybind11",
-        urls = tf_mirror_urls("https://github.com/pybind/pybind11/archive/v2.6.0.tar.gz"),
-        sha256 = "90b705137b69ee3b5fc655eaca66d0dc9862ea1759226f7ccd3098425ae69571",
-        strip_prefix = "pybind11-2.6.0",
+        urls = tf_mirror_urls("https://github.com/pybind/pybind11/archive/v2.9.2.tar.gz"),
+        sha256 = "6bd528c4dbe2276635dc787b6b1f2e5316cf6b49ee3e150264e455a0d68d19c1",
+        strip_prefix = "pybind11-2.9.2",
         build_file = "//third_party:pybind11.BUILD",
         patch_file = ["//third_party:pybind11.patch"],
         system_build_file = "//third_party/systemlibs:pybind11.BUILD",

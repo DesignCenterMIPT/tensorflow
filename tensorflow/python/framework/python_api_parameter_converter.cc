@@ -38,8 +38,6 @@ limitations under the License.
     if (!(condition)) return false; \
   } while (0)
 
-#define PyList_ITEMS(o) (((PyListObject*)(o))->ob_item)
-
 namespace tensorflow {
 
 using InferredAttributes = PythonAPIInfo::InferredAttributes;
@@ -227,10 +225,10 @@ bool ConvertInputWithFixedDType(const InputWithFixedDType& input,
                                            api_info, input.index));
   } else {
     DCHECK(PyList_CheckExact(src));
-    PyObject** items = PyList_ITEMS(src);
     Py_ssize_t len = PyList_GET_SIZE(src);
     for (Py_ssize_t i = 0; i < len; ++i) {
-      RETURN_IF_FALSE(ConvertToTensorInPlace(items[i], dtype, tensor_converter,
+      PyObject* item = PyList_GET_ITEM(src, i);
+      RETURN_IF_FALSE(ConvertToTensorInPlace(item, dtype, tensor_converter,
                                              api_info, input.index));
     }
   }
@@ -266,9 +264,9 @@ bool ConvertInputsWithTypeAttr(const InputsWithTypeAttr& input,
         PyObject* tensor_list = params[index];
         DCHECK(PyList_CheckExact(tensor_list));
         Py_ssize_t num_tensors = PyList_GET_SIZE(tensor_list);
-        PyObject** tensors = PyList_ITEMS(tensor_list);
         for (Py_ssize_t i = 0; i < num_tensors; ++i) {
-          RETURN_IF_FALSE(InferDType(tensors[i], dtype));
+          PyObject* tensor = PyList_GET_ITEM(tensor_list, i);
+          RETURN_IF_FALSE(InferDType(tensor, dtype));
           if (dtype != DT_INVALID) break;
         }
         if (dtype != DT_INVALID) break;
@@ -288,9 +286,9 @@ bool ConvertInputsWithTypeAttr(const InputsWithTypeAttr& input,
     PyObject* tensor_list = params[index];
     DCHECK(PyList_CheckExact(tensor_list));
     Py_ssize_t num_tensors = PyList_GET_SIZE(tensor_list);
-    PyObject** items = PyList_ITEMS(tensor_list);
     for (Py_ssize_t i = 0; i < num_tensors; ++i) {
-      RETURN_IF_FALSE(ConvertToTensorInPlace(items[i], dtype, tensor_converter,
+      PyObject* item = PyList_GET_ITEM(tensor_list, i);
+      RETURN_IF_FALSE(ConvertToTensorInPlace(item, dtype, tensor_converter,
                                              api_info, index, &input.ok_dtypes,
                                              input.default_dtype));
     }
@@ -371,12 +369,12 @@ bool ConvertInputsWithTypeListAttr(
   // Convert tensors.
   for (ParamIndex index : input.tensor_list_params) {
     PyObject* tensor_list = params[index];
-    PyObject** items = PyList_ITEMS(tensor_list);
     for (Py_ssize_t i = 0; i < num_tensors; ++i) {
+      PyObject* item = PyList_GET_ITEM(tensor_list, i);
       DataType default_dtype = i < input.default_dtypes.size()
                                    ? input.default_dtypes[i]
                                    : DT_INVALID;
-      RETURN_IF_FALSE(ConvertToTensorInPlace(items[i], dtypes[i],
+      RETURN_IF_FALSE(ConvertToTensorInPlace(item, dtypes[i],
                                              tensor_converter, api_info, index,
                                              &input.ok_dtypes, default_dtype));
     }

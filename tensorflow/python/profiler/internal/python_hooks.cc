@@ -86,14 +86,9 @@ void ForEachThread(PyThreadState* curr_thread, ForEachThreadFunc&& callback) {
   // Note: PyThreadState's interp is not accessible in open source due to
   // Py_LIMITED_API definition nuances. We can not iterate all threads through
   // that PyInterpreterState.
-  for (PyThreadState* p = curr_thread; p != nullptr; p = p->next) {
-    PyThreadState_Swap(p);
-    callback(p);
-  }
-  for (PyThreadState* p = curr_thread->prev; p != nullptr; p = p->prev) {
-    PyThreadState_Swap(p);
-    callback(p);
-  }
+  PyThreadState* p = curr_thread;
+  PyThreadState_Swap(p);
+  callback(p);
 }
 
 }  // namespace
@@ -341,7 +336,7 @@ void PythonHookContext::ProfileFast(PyFrameObject* frame, int what,
   // end up recording that in our trace.
   PyThreadState* curr_thread = PyThreadState_Get();
   ForEachThread(curr_thread, [](PyThreadState* thread) {
-    VLOG(1) << "Setting profiler in " << thread->thread_id;
+    VLOG(1) << "Setting profiler in 0";
     PyEval_SetProfile(&PythonHooks::ProfileFunction, nullptr);
   });
   PyThreadState_Swap(curr_thread);
@@ -350,7 +345,7 @@ void PythonHookContext::ProfileFast(PyFrameObject* frame, int what,
 /*static*/ void PythonHookContext::ClearProfilerInAllThreads() {
   PyThreadState* curr_thread = PyThreadState_Get();
   ForEachThread(curr_thread, [](PyThreadState* thread) {
-    VLOG(1) << "Clearing profiler in " << thread->thread_id;
+    VLOG(1) << "Clearing profiler in 0";
     PyEval_SetProfile(nullptr, nullptr);
   });
   PyThreadState_Swap(curr_thread);

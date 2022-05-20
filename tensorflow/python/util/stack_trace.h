@@ -61,17 +61,17 @@ class StackTrace final {
     if (limit == -1) limit = std::numeric_limits<int>::max();
 
     StackTrace result;
-    const PyFrameObject* frame = PyThreadState_GET()->frame;
-    int i = 0;
-    for (; i < limit && frame != nullptr; frame = frame->f_back, ++i) {
-      PyCodeObject* code_obj = frame->f_code;
-      DCHECK(code_obj != nullptr);
+    // const PyFrameObject* frame = PyThreadState_GET()->frame;
+    // int i = 0;
+    // for (; i < limit && frame != nullptr; frame = frame->f_back, ++i) {
+    //   PyCodeObject* code_obj = frame->f_code;
+    //   DCHECK(code_obj != nullptr);
 
-      Py_INCREF(code_obj);
-      int line_number =
-          PyFrame_GetLineNumber(const_cast<PyFrameObject*>(frame));
-      result.code_objs_.push_back(std::make_pair(code_obj, line_number));
-    }
+    //   Py_INCREF(code_obj);
+    //   int line_number =
+    //       PyFrame_GetLineNumber(const_cast<PyFrameObject*>(frame));
+    //   result.code_objs_.push_back(std::make_pair(code_obj, line_number));
+    // }
     return result;
   }
 

@@ -117,7 +117,7 @@ PYBIND11_MODULE(_pywrap_python_api_dispatcher, m) {
   m.def("MakeInstanceChecker", [](py::args py_classes) {
     std::vector<PyObject*> py_classes_vector;
     py_classes_vector.reserve(py_classes.size());
-    for (auto& cls : py_classes) {
+    for (auto cls : py_classes) {
       if (!PyType_Check(cls.ptr())) {
         throw py::type_error("`*py_classes` must be a tuple of types.");
       }
